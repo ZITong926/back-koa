@@ -13,11 +13,13 @@
     "knex": "^0.15.2",
     "koa": "^2.5.2",
     "koa-bodyparser": "^4.2.1",
+    "koa-redis": "^3.1.2",
     "koa-router": "^7.4.0",
     "koa-session": "^5.8.2",
     "koa-static": "^5.0.0",
     "koa2-cors": "^2.0.6",
     "mysql": "^2.16.0",
+    "redis": "^2.8.0",
     "request": "^2.87.0",
     "sqlite3": "^4.0.2"
   }

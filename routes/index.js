@@ -1,6 +1,7 @@
 const { getUsers, findById } = require('../utils/mysql.js');
 const sendSms = require('../utils/msm');
 const Router = require('koa-router');
+const redis = require('redis').createClient();
 const router = new Router();
 
 //登录接口
@@ -50,7 +51,13 @@ router.post('/get-phone-code', async ctx => {
 })
 
 router.get('/', async ctx => {
-	const { user_id } = ctx.session;
+	const sessionid = getSessionId(ctx.header.cookie)
+	console.log(sessionid)
+	await redis.hgetall(sessionid, function(err, object) {
+	  console.log(object)
+	})
+	// 1533205833776-ejN0iiyZopRcninMXCQJV1KQy9BFm2F-
+	const { user_id } = ctx.session
 	await findById(user_id).then(data => {
 		ctx.body = ({
 			code: 0,
@@ -60,5 +67,18 @@ router.get('/', async ctx => {
 		throw err
 	})
 })
+
+function getSessionId(cookies){  
+    let  c_name = 'koa:sess';  
+    if (cookies.length > 0) {  
+        c_start = cookies.indexOf(c_name + "=") 
+        if (c_start != -1) {   
+	        c_start = c_name.length+1   
+	        c_end = cookies.indexOf(";",c_start)  
+	        if(c_end==-1) c_end = cookies.length  
+	        return unescape(cookies.substring(c_start,c_end));  
+    	}
+    }  
+}  
 
 module.exports = router.routes();

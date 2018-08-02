@@ -12,6 +12,11 @@ const CONF = {
         db: 'db',
         pass: '0000',
         char: 'utf8mb4'
+    },
+    redis: {
+        host: 'localhost',
+        db: 0,
+        port: 6379
     }
 }
 
