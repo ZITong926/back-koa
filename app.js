@@ -1,14 +1,20 @@
-const path = require('path');
-const static = require('koa-static');
-const bodyParser = require('koa-bodyparser');
+const path = require('path')
+const static = require('koa-static')
+const bodyParser = require('koa-bodyparser')
 const session = require('koa-session')
 // const cors = require('koa2-cors');
+const  onerror = require('koa-onerror')
 const redisStore = require('koa-redis')
+const json = require('koa-json')
+const logger = require('koa-logger')
 const koa = require('koa');
 const app = new koa();
 
-const config = require('./config');
-const index = require('./routes/index');
+const config = require('./config/index')
+const index = require('./routes/index')
+
+// error handler
+onerror(app)
 
 app.keys = ['cancan'];
 
@@ -31,8 +37,18 @@ const CONFIG = {
 };
 
 app.use(session(CONFIG, app));
-
 app.use(bodyParser());
+app.use(json());
+app.use(logger());
+
+// app.use(async (ctx, next) => {
+//     if (!ctx.session) {
+//         console.log(ctx.session)
+//         return next(new Error('oh no'))
+//     }
+//     next()
+// })
+
 
 //配置跨域
 // app.use(cors({
@@ -52,6 +68,9 @@ app.use(bodyParser());
 app.use(index);
 app.use(static(path.join(__dirname), 'static'))
 
-app.listen(3000, () => {
-	console.log(`serve is running at localhost:3000`);
-})
+// error-handling
+app.on('error', (err, ctx) => {
+  console.error('server error', err, ctx)
+});
+
+module.exports = app;

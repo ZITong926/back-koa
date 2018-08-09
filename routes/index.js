@@ -16,15 +16,14 @@ router.post('/login', async ctx => {
 	await getUsers(num).then( data => {
 		if (data[0]) {
 			ctx.session.user_id = data[0].id;
-			if (password&&password === data.password) {
+			if (password&&password == data[0].password) {
 				ctx.body = ({
 					code: 0,
 					data
 				});
 			}else {
 				ctx.body = ({
-					code: 0,
-					data
+					code: 1
 				});
 			}
 		} else {
@@ -52,19 +51,12 @@ router.post('/get-phone-code', async ctx => {
 
 router.get('/', async ctx => {
 	const sessionid = getSessionId(ctx.header.cookie)
-	console.log(sessionid)
-	await redis.hgetall(sessionid, function(err, object) {
-	  console.log(object)
-	})
-	// 1533205833776-ejN0iiyZopRcninMXCQJV1KQy9BFm2F-
-	const { user_id } = ctx.session
-	await findById(user_id).then(data => {
+	await redis.get(sessionid, (err, object) => {
+	  	if (err) return
 		ctx.body = ({
-			code: 0,
-			data
+	  		code: 0,
+	  		data: object
 		})
-	}).catch(err => {
-		throw err
 	})
 })
 

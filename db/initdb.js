@@ -1,7 +1,7 @@
 /**
  * 数据库初始化脚本
  */
-const { mysql: config } = require('../config.js');
+const { mysql: config } = require('../config/index');
 
 module.exports = require('knex')({
     client: 'mysql',
