@@ -10,7 +10,8 @@ const CONF = {
         port: 3306,
         user: 'root',
         db: 'db',
-        pass: '0000',
+        // pass: '0000',
+        pass: 'root',
         char: 'utf8mb4'
     },
     redis: {
